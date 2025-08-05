@@ -8,7 +8,13 @@ class SimpleFacerec:
         self.known_face_encodings = []
         self.known_face_names = []
         self.engine = pyttsx3.init()
-        self.last_spoken_name = None
+
+        self.last_seen_names = set()  # <- TRACK WHO WAS SEEN LAST FRAME
+
+        # Optional: Adjust voice properties
+        self.engine.setProperty('rate', 150)
+        voices = self.engine.getProperty('voices')
+        self.engine.setProperty('voice', voices[1].id)
 
     def load_encoding_images(self, images_path):
         images_list = os.listdir(images_path)
@@ -29,7 +35,6 @@ class SimpleFacerec:
                 print(f"[INFO] Loaded {filename}")
 
     def detect_known_faces(self, frame):
-        
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         face_locations = face_recognition.face_locations(rgb_frame)
@@ -49,10 +54,16 @@ class SimpleFacerec:
 
             face_names.append(name)
 
-            # Voice output
-            if name != "Unknown" and name != self.last_spoken_name:
-                self.speak(f"Hello, {name}")
-                self.last_spoken_name = name
+        # --- SPEAK ONLY FOR NEWLY DETECTED NAMES ---
+        current_names = set(face_names)
+        new_names = current_names - self.last_seen_names  # Who just appeared?
+
+        for name in new_names:
+            if name != "Unknown":
+                self.speak(f"Hello {name}")
+
+        # Update last seen names for the next frame
+        self.last_seen_names = current_names
 
         return face_locations, face_names
 
