@@ -50,7 +50,7 @@ while True:
     cv2.imshow("Frame", frame)
 
     key = cv2.waitKey(1)
-    if key == 27:  # ESC key
+    if key == ord('q') or key == ord('Q'):
         break
 
 cap.release()
