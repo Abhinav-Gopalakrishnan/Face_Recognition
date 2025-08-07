@@ -9,7 +9,7 @@ sfr.load_encoding_images("C:/Users/abhi6/OneDrive/Documents/Face_Recog/images/")
 
 # Initialize speech engine
 engine = pyttsx3.init()
-engine.setProperty('rate', 150)
+engine.setProperty('rate', 160)
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)  # Optional female voice
 

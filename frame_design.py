@@ -50,7 +50,7 @@ def apply_frame_design(frame, fps=None):
 
     # Live status indicator (moved below time)
     cv2.circle(frame, (width - 30, 55), 8, (0, 0, 255), -1)
-    cv2.putText(frame, "Live", (width - 100, 60),
+    cv2.putText(frame, "Live", (width - 90, 60),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
 
     # === 3. Bottom Bar ===
