@@ -1,10 +1,10 @@
-# main.py
 import cv2
 import pyttsx3
 import time
 from datetime import datetime
 from simple_facerec import SimpleFacerec
 from frame_design import draw_faces_on_frame, apply_frame_design
+from attendance_logger import AttendanceLogger  # new import
 
 # Initialize face recognition
 sfr = SimpleFacerec()
@@ -16,8 +16,10 @@ engine.setProperty('rate', 160)
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)  # Female voice
 
-cap = cv2.VideoCapture(0)
+# Initialize attendance logger
+attendance_logger = AttendanceLogger()
 
+cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Error: Could not open camera")
     exit()
@@ -35,6 +37,9 @@ while True:
 
     # Detect faces
     face_locations, face_names = sfr.detect_known_faces(frame)
+
+    # Update attendance
+    attendance_logger.update(face_names)
 
     # Update "last seen" timestamps
     for name in face_names:
@@ -67,6 +72,9 @@ while True:
 
     if cv2.waitKey(1) & 0xFF in [ord('q'), ord('Q')]:
         break
+
+# Save attendance when quitting
+attendance_logger.save_to_excel()
 
 cap.release()
 cv2.destroyAllWindows()
